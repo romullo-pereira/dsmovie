@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class MovieService {
 
@@ -16,12 +18,19 @@ public class MovieService {
     private MovieRepository repository;
 
     @Transactional(readOnly = true)
-    public Page<MovieDTO> getAll(Pageable pageable) {
+    public Page<MovieDTO> getAll(Pageable pageable) throws Exception {
         Page<Movie> result =  repository.findAll(pageable);
+        if(result.isEmpty()) {
+            throw new Exception("Sem conteudo");
+        }
         return result.map(MovieDTO::new);
     }
 
-    public MovieDTO getById(Long id) {
-        return new MovieDTO(repository.findById(id).get());
+    public MovieDTO getById(Long id) throws Exception {
+        Optional<Movie> result = repository.findById(id);
+        if(!result.isPresent()) {
+            throw new Exception("Filme Inexistente");
+        }
+        return new MovieDTO(result.get());
     }
 }
