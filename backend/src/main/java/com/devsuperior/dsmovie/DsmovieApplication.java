@@ -1,5 +1,6 @@
 package com.devsuperior.dsmovie;
 
+import com.devsuperior.dsmovie.entities.Score;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
