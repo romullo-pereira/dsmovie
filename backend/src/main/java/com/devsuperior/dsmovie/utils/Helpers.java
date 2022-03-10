@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Helpers {
 
-    public static Double sumValues(List<Score> scores) {
-        return scores.stream().mapToDouble(Score::getValue).sum();
+    public static Double avgValues(List<Score> scores) {
+        return scores.stream().mapToDouble(Score::getValue).sum() / scores.size();
     }
 }

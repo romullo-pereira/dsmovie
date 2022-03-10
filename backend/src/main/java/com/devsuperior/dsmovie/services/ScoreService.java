@@ -1,5 +1,6 @@
 package com.devsuperior.dsmovie.services;
 
+import com.devsuperior.dsmovie.dto.MovieDTO;
 import com.devsuperior.dsmovie.dto.ScoreDTO;
 import com.devsuperior.dsmovie.entities.Movie;
 import com.devsuperior.dsmovie.entities.Score;
@@ -8,15 +9,13 @@ import com.devsuperior.dsmovie.entities.User;
 import com.devsuperior.dsmovie.repositories.MovieRepository;
 import com.devsuperior.dsmovie.repositories.ScoreRepository;
 import com.devsuperior.dsmovie.repositories.UserRepository;
-import com.devsuperior.dsmovie.utils.Helpers;
-import com.devsuperior.dsmovie.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.devsuperior.dsmovie.utils.Helpers.sumValues;
+import static com.devsuperior.dsmovie.utils.Helpers.avgValues;
 import static com.devsuperior.dsmovie.utils.ResponseMessages.NON_EXISTENT_MOVIE;
 
 @Service
@@ -31,19 +30,19 @@ public class ScoreService {
     @Autowired
     private MovieRepository movieRepository;
 
-    public Score saveScore(ScoreDTO dto) throws Exception {
+    public MovieDTO saveScore(ScoreDTO dto) throws Exception {
         ScorePK scorePK = new ScorePK(getMovieById(dto.getId()), getUserByEmail(dto.getEmail()));
 
         updateScore(scorePK.getMovie(), scoreRepository.findByMovieId(dto.getId()));
 
-        return scoreRepository.save(new Score(scorePK, dto.getValue()));
+        return new MovieDTO(scoreRepository.saveAndFlush(new Score(scorePK, dto.getValue())).getId().getMovie());
     }
 
     private User getUserByEmail(String email) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(email));
 
         if(!userOptional.isPresent()) {
-            return userRepository.save(new User(email));
+            return userRepository.saveAndFlush(new User(email));
         }
 
         return userOptional.get();
@@ -64,8 +63,8 @@ public class ScoreService {
         movie.setScore(0.0);
 
         if(!scores.isEmpty()) {
-            movie.setCount(movie.getCount() + 1);
-            movie.setScore(sumValues(scores) / movie.getCount());
+            movie.setCount(scores.size());
+            movie.setScore(avgValues(scores));
         }
         movieRepository.save(movie);
     }

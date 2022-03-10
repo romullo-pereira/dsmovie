@@ -16,7 +16,7 @@ public class ScoreController {
     @Autowired
     private ScoreService service;
 
-    @PostMapping
+    @PutMapping
     public ResponseEntity saveScore(@Valid @RequestBody ScoreDTO scoreDTO) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(service.saveScore(scoreDTO));
