@@ -1,10 +1,6 @@
 package com.devsuperior.dsmovie.entities;
 
 import com.devsuperior.dsmovie.utils.ResponseMessages;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 
 import javax.persistence.*;
